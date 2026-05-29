@@ -10,14 +10,13 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from llm import get_llm
+from memory.context import build_context, DEFAULT_SYSTEM_PROMPT
 
 load_dotenv()
 
-SYSTEM_PROMPT = (
-    "You are a helpful, honest, and concise personal assistant. "
-    "If you are unsure or do not know something, say so rather than guessing."
-)
-MAX_TURNS = int(os.getenv("MEMORY_MAX_TURNS", "10"))
+SYSTEM_PROMPT = DEFAULT_SYSTEM_PROMPT
+MAX_TOKENS = int(os.getenv("MEMORY_MAX_TOKENS", "2048"))
+MAX_TURNS = int(os.getenv("MEMORY_MAX_TURNS", "0")) or None  # 0 -> no hard cap
 
 st.set_page_config(page_title="Open Source Assistant", page_icon="🤖")
 st.title("🤖 Open Source Assistant")
@@ -29,7 +28,7 @@ def load_backend():
 
 
 llm = load_backend()
-st.caption(f"Backend: `{llm.name}`  ·  short-term memory: last {MAX_TURNS} turns")
+st.caption(f"Backend: `{llm.name}`  ·  short-term memory: ~{MAX_TOKENS} tokens")
 
 # --- conversation state ---
 if "messages" not in st.session_state:
@@ -46,9 +45,14 @@ if prompt := st.chat_input("Ask me anything..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Short-term memory: system prompt + the last N turns (N*2 messages).
-    recent = st.session_state.messages[-(MAX_TURNS * 2):]
-    payload = [{"role": "system", "content": SYSTEM_PROMPT}] + recent
+    # Short-term memory: system prompt + as much recent history as fits
+    # within the token budget (oldest messages dropped first).
+    payload = build_context(
+        st.session_state.messages,
+        system_prompt=SYSTEM_PROMPT,
+        max_tokens=MAX_TOKENS,
+        max_turns=MAX_TURNS,
+    )
 
     with st.chat_message("assistant"):
         response = st.write_stream(llm.stream(payload))

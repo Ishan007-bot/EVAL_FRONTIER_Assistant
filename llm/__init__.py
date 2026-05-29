@@ -2,7 +2,8 @@
 
 `get_llm()` returns the active backend based on the BACKEND env var:
     ollama -> local dev (Ollama server)
-    hf     -> HF Spaces deploy (transformers)  [added in a later phase]
+    hf     -> HF Spaces deploy (transformers)
+    gemini -> frontier model via Google Gemini API (comparison / demos)
 
 Every backend exposes the same tiny interface:
     .name           -> str  (e.g. "ollama:qwen2.5:1.5b")
@@ -21,6 +22,9 @@ def get_llm():
         from .ollama_backend import OllamaBackend
         return OllamaBackend()
     if backend == "hf":
-        from .hf_backend import HFBackend  # added in the deploy phase
+        from .hf_backend import HFBackend
         return HFBackend()
-    raise ValueError(f"Unknown BACKEND '{backend}'. Use 'ollama' or 'hf'.")
+    if backend == "gemini":
+        from .gemini_backend import GeminiBackend
+        return GeminiBackend()
+    raise ValueError(f"Unknown BACKEND '{backend}'. Use 'ollama', 'hf', or 'gemini'.")

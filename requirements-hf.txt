@@ -1,0 +1,18 @@
+# ============================================================
+# HUGGING FACE SPACES (deploy) requirements
+# Backend = transformers (Qwen2.5-0.5B-Instruct on CPU).
+# This is what the Space installs to run the chat app.
+#
+# NOTE: a Space only reads a file literally named "requirements.txt".
+# At deploy time, this file's contents become the Space's
+# requirements.txt (see README deploy steps). We keep it separate
+# in the repo so local dev stays lightweight (no torch download).
+# ============================================================
+
+# --- Core app ---
+streamlit>=1.40
+python-dotenv>=1.0
+
+# --- OSS model backend (deployed) ---
+transformers>=4.44     # loads Qwen2.5-0.5B-Instruct directly
+torch>=2.2             # inference engine used by transformers (CPU build)

@@ -1,13 +1,18 @@
+# ============================================================
+# LOCAL DEV requirements (your machine)
+# Backend = Ollama, plus the evaluation + reporting tooling.
+# Lightweight: NO torch / transformers here (those are deploy-only).
+# Install with:  pip install -r requirements.txt
+# ============================================================
+
 # --- Core app ---
 streamlit>=1.40
 python-dotenv>=1.0
 
-# --- OSS model backends ---
-ollama>=0.3            # local dev backend
-transformers>=4.44     # HF Spaces deploy backend (Qwen2.5-0.5B on CPU)
-torch>=2.2             # required by transformers backend
+# --- OSS model backend (local) ---
+ollama>=0.3            # talks to the local Ollama server over HTTP
 
-# --- Frontier model (comparison + LLM-as-judge) ---
+# --- Frontier model (comparison + LLM-as-judge during eval) ---
 anthropic>=0.40
 
 # --- Evaluation & reporting ---

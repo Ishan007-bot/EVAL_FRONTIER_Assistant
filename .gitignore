@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Env / secrets
+.env
+
+# Eval outputs (raw runs)
+eval/results/*.jsonl
+eval/results/*.csv
+
+# OS
+Thumbs.db
+.DS_Store

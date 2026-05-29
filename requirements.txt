@@ -1,0 +1,15 @@
+# --- Core app ---
+streamlit>=1.40
+python-dotenv>=1.0
+
+# --- OSS model backends ---
+ollama>=0.3            # local dev backend
+transformers>=4.44     # HF Spaces deploy backend (Qwen2.5-0.5B on CPU)
+torch>=2.2             # required by transformers backend
+
+# --- Frontier model (comparison + LLM-as-judge) ---
+anthropic>=0.40
+
+# --- Evaluation & reporting ---
+pandas>=2.2
+matplotlib>=3.9

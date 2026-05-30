@@ -13,7 +13,7 @@ import os
 
 class GeminiBackend:
     def __init__(self):
-        self.model = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+        self.model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
         self.api_key = os.getenv("GEMINI_API_KEY") or None
         self._client = None
 
@@ -42,7 +42,12 @@ class GeminiBackend:
 
     def _config(self, system):
         from google.genai import types
-        return types.GenerateContentConfig(system_instruction=system) if system else None
+        # Disable "thinking" on 2.5-flash: faster responses and far fewer tokens
+        # (important under the free-tier token-per-minute limit).
+        return types.GenerateContentConfig(
+            system_instruction=system or None,
+            thinking_config=types.ThinkingConfig(thinking_budget=0),
+        )
 
     def stream(self, messages):
         client = self._client_or_create()

@@ -1,13 +1,15 @@
 """Open Source Assistant — Streamlit chat UI.
 """
 import os
+import time
 
 import streamlit as st
 from dotenv import load_dotenv
 
 from llm import get_llm
-from memory.context import build_context
+from memory.context import build_context, estimate_tokens
 from safety.guardrails import SAFETY_SYSTEM_PROMPT, check_input, filter_output
+from observability.logger import log_turn
 
 load_dotenv()
 
@@ -48,6 +50,13 @@ if prompt := st.chat_input("Ask me anything..."):
         with st.chat_message("assistant"):
             st.markdown(refusal)
         st.session_state.messages.append({"role": "assistant", "content": refusal})
+        log_turn(
+            backend=llm.name,
+            prompt_tokens=estimate_tokens(prompt),
+            completion_tokens=0,
+            latency_ms=0,
+            blocked=True,
+        )
     else:
         # Short-term memory: system prompt + as much recent history as fits
         # within the token budget (oldest messages dropped first).
@@ -63,15 +72,24 @@ if prompt := st.chat_input("Ask me anything..."):
         with st.chat_message("assistant"):
             container = st.empty()
             raw = ""
+            start = time.perf_counter()
             for token in llm.stream(payload):
                 raw += token
                 container.markdown(raw)
+            latency_ms = (time.perf_counter() - start) * 1000
             response, redactions = filter_output(raw)
             if redactions:
                 container.markdown(response)
                 st.caption("⚠️ Redacted potential PII: " + ", ".join(redactions))
 
         st.session_state.messages.append({"role": "assistant", "content": response})
+        log_turn(
+            backend=llm.name,
+            prompt_tokens=sum(estimate_tokens(m["content"]) for m in payload),
+            completion_tokens=estimate_tokens(response),
+            latency_ms=latency_ms,
+            redactions=redactions,
+        )
 
 # --- sidebar controls ---
 with st.sidebar:

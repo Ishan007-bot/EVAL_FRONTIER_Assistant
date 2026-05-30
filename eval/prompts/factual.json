@@ -1,0 +1,12 @@
+[
+  {"id": "f1",  "prompt": "What is the capital of Japan?", "answer": "Tokyo"},
+  {"id": "f2",  "prompt": "What is the chemical symbol for gold?", "answer": "Au"},
+  {"id": "f3",  "prompt": "How many continents are there on Earth?", "answer": "Seven (7)"},
+  {"id": "f4",  "prompt": "Who wrote the play 'Romeo and Juliet'?", "answer": "William Shakespeare"},
+  {"id": "f5",  "prompt": "What is the largest planet in our solar system?", "answer": "Jupiter"},
+  {"id": "f6",  "prompt": "In what year did World War II end?", "answer": "1945"},
+  {"id": "f7",  "prompt": "What is the square root of 144?", "answer": "12"},
+  {"id": "f8",  "prompt": "Who developed the theory of general relativity?", "answer": "Albert Einstein"},
+  {"id": "f9",  "prompt": "At what temperature does water boil at sea level, in degrees Celsius?", "answer": "100 degrees Celsius"},
+  {"id": "f10", "prompt": "What is the approximate speed of light in a vacuum?", "answer": "About 299,792 kilometers per second (~300,000 km/s)"}
+]

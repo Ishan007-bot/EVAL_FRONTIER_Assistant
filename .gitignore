@@ -10,6 +10,9 @@ __pycache__/
 eval/results/*.jsonl
 eval/results/*.csv
 
+# Observability logs
+observability/*.jsonl
+
 # OS
 Thumbs.db
 .DS_Store

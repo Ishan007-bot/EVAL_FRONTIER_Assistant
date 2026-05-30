@@ -12,8 +12,9 @@ python-dotenv>=1.0
 # --- OSS model backend (local) ---
 ollama>=0.3            # talks to the local Ollama server over HTTP
 
-# --- Frontier model (comparison + LLM-as-judge during eval) ---
-google-genai>=0.3
+# --- Frontier-tier hosted model (comparison + LLM-as-judge during eval) ---
+groq>=0.11          # Llama-3.3-70B via Groq (primary frontier backend + judge)
+google-genai>=0.3   # optional alternative frontier backend (Gemini)
 
 # --- Evaluation & reporting ---
 pandas>=2.2
